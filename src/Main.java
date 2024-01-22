@@ -1,5 +1,7 @@
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -29,7 +31,8 @@ public class Main {
                         System.out.println("2");
                         break;
                     case 3:
-                        System.out.println("3");
+                        viewAllBooks();
+                        break;
                     case 4:
                         System.exit(0);
                     default:
@@ -73,14 +76,17 @@ public class Main {
         }
     }
 
-    private static void executeSelectQuery(String query) throws SQLException{
+    private static ResultSet executeSelectQuery(String query) throws SQLException{
         String url = "jdbc:postgresql://localhost:5432/postgres";
+        List<Integer> orderedTruthTableList = new ArrayList<>();
+        List<String> myStringArray = new ArrayList<>();
 
         try {
             Connection conn = DriverManager.getConnection(url, "admin", "admin");
-            PreparedStatement st = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-
-
+            PreparedStatement st = conn.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            conn.close();
+            return rs;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -102,7 +108,18 @@ public class Main {
     }
 
     private static void viewAllBooks() throws SQLException {
-        System.out.println(executeSelectQuery("SELECT * FROM books"));
+        ResultSet rs = executeSelectQuery("SELECT ID, title, author, year_published FROM books");
+        System.out.println("ID | Title | Author | Year Published ");
+        while (rs.next()) {
+            int ID = rs.getInt("ID");
+            String rs_title = rs.getString("title");
+            String rs_author = rs.getString("author");
+            int rs_yearPublished = rs.getInt("year_published");
+            String record = ID + " | " + rs_title + " | " + rs_author + " | " + rs_yearPublished;
+            System.out.println(record);
+        }
+
+
     }
 
 

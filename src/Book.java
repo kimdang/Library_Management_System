@@ -2,9 +2,15 @@ public class Book {
     private String title;
     private String author;
     private int yearPublished;
-    private int ID;
+    private int ID ;
 
     public Book(String title, String author, int yearPublished) {
+        this.title = title;
+        this.author = author;
+        this.yearPublished = yearPublished;
+    }
+
+    public Book(int ID, String title, String author, int yearPublished) {
         this.title = title;
         this.author = author;
         this.yearPublished = yearPublished;
@@ -49,10 +55,10 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Title: " + title +
-                ", Author: " + author +
-                ", Year Published: " + yearPublished +
-                ", ID: " + ID;
+        return "Title " + title +
+                ", Author " + author +
+                ", Year Published " + yearPublished +
+                ", ID " + ID;
     }
 
 
