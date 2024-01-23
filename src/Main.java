@@ -28,7 +28,7 @@ public class Main {
                         addBook();
                         break;
                     case 2:
-                        System.out.println("2");
+                        searchBook();
                         break;
                     case 3:
                         viewAllBooks();
@@ -39,13 +39,11 @@ public class Main {
                         System.out.println("Invalid entry!");
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Invalid entry! Please enter a number!");
+                System.out.println("Invalid entry! Please enter a number between 1-4!");
                 scanner.nextLine(); // consume invalid entry
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-
-
         }
     }
 
@@ -55,14 +53,11 @@ public class Main {
         try {
             Connection conn = DriverManager.getConnection(url, "admin", "admin");
             PreparedStatement st = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-
             int m = st.executeUpdate();
             conn.close(); // close connection after every query
-
             if (m == 0) {
                 throw new SQLException("INSERT query failed, no row affected.");
             }
-
             try (ResultSet generatedKeys = st.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     return generatedKeys.getInt(1);
@@ -70,7 +65,6 @@ public class Main {
                     throw new SQLException("INSERT query failed, no ID obtained.");
                 }
             }
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -78,8 +72,6 @@ public class Main {
 
     private static ResultSet executeSelectQuery(String query) throws SQLException{
         String url = "jdbc:postgresql://localhost:5432/postgres";
-        List<Integer> orderedTruthTableList = new ArrayList<>();
-        List<String> myStringArray = new ArrayList<>();
 
         try {
             Connection conn = DriverManager.getConnection(url, "admin", "admin");
@@ -118,9 +110,60 @@ public class Main {
             String record = ID + " | " + rs_title + " | " + rs_author + " | " + rs_yearPublished;
             System.out.println(record);
         }
-
-
     }
 
+    private static void searchBook() throws SQLException {
+        System.out.println("Search by ");
+        System.out.println("1. ID");
+        System.out.println("2. Title");
+        System.out.println("3. Author");
+        System.out.println("4. Year Published");
+        System.out.print("Your choice: ");
 
+        String searchBy = null;
+        try {
+            byte searchChoice = scanner.nextByte();
+            switch (searchChoice) {
+                case 1:
+                    searchBy = "ID";
+                    break;
+                case 2:
+                    searchBy = "title";
+                    break;
+                case 3:
+                    searchBy = "author";
+                    break;
+                case 4:
+                    searchBy = "year_published";
+                    break;
+                default:
+                    System.out.println("Invalid entry!");
+            }
+
+            System.out.print(searchBy + " = ");
+            scanner.nextLine();
+            String searchVar = scanner.nextLine();
+
+            String searchQuery = String.format("SELECT * FROM books where %s = '%s'", searchBy, searchVar);
+            ResultSet rs = executeSelectQuery(searchQuery);
+            if (!rs.isBeforeFirst()) {
+                System.out.println("No entry found.");
+            } else {
+                System.out.println("ID | Title | Author | Year Published ");
+                while (rs.next()) {
+                    int ID = rs.getInt("ID");
+                    String rs_title = rs.getString("title");
+                    String rs_author = rs.getString("author");
+                    int rs_yearPublished = rs.getInt("year_published");
+                    String record = ID + " | " + rs_title + " | " + rs_author + " | " + rs_yearPublished;
+                    System.out.println(record);
+                }
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid entry! Please enter a number between 1-4!");
+            scanner.nextLine(); // consume invalid entry
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
