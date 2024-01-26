@@ -2,7 +2,7 @@ public class Book {
     private String title;
     private String author;
     private int yearPublished;
-    private int ID ;
+    private int ID;
 
     public Book(String title, String author, int yearPublished) {
         this.title = title;
@@ -49,8 +49,8 @@ public class Book {
     }
 
     public String createInsertQuery() {
-        return "INSERT INTO books (title, author, year_published) VALUES ('" +
-                title + "', " + "'" + author + "', " + yearPublished + ");";
+        return "INSERT INTO books (title, author, year_published, date_added) VALUES ('" +
+                title + "', " + "'" + author + "', " + yearPublished + ", current_timestamp" + ");";
     }
 
     @Override
