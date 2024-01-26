@@ -1,8 +1,8 @@
 ## Library Management System
 
 ---
-This library management system is a Java application that enables users to manage and track books within a library.
-The system consists of features such as adding book, search for a book, and view all books.
+This system is a Java command line application that enables users to manage and track books within a library.
+The system consists of features such as adding book, search for book, remove book and view all books.
 
 ### Prerequisites 
 * Java Development Kit 21.0.2
@@ -11,9 +11,9 @@ The system consists of features such as adding book, search for a book, and view
 
 ### Installation
 * Clone the repository
-* run docker-compose up -d to start postgresql and pgadmin containers
-* Set up schema
-* run the application
+* Run `docker-compose up -d` to start PostgreSQL and pgAdmin containers
+* Use dbscript.sql to set up the schema
+* Run the application
 
 ### Contact
 For any questions or inquiries, please contact Kim at nkdang0795@gmail.com
